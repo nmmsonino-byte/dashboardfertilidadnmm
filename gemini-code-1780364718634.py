@@ -83,50 +83,50 @@ al_meq = st.sidebar.number_input("Aluminio Intercambiable (Al³⁺):", 0.0, 10.0
 # MEMORIA DE CÁLCULO INTERNA
 # ==========================================
 # Peso de la Capa Arable (PCA)
-pca = 10000 * (profundidad / 100) * da  # t/ha[cite: 2]
+pca = 10000 * (profundidad / 100) * da  # t/ha
 
-# Conversiones a kg/ha[cite: 1]
-# Fósforo disponible elemental y P2O5[cite: 1]
+# Conversiones a kg/ha
+# Fósforo disponible elemental y P2O5
 p_kg_ha = (p_ppm * pca) / 1000
-p2o5_oferta = p_kg_ha * 2.29  # Fómula de Chilón (2014)[cite: 1]
+p2o5_oferta = p_kg_ha * 2.29  # Fómula de Chilón (2014)
 
-# Cationes cambiables a kg/ha usando pesos equivalentes (PE)[cite: 1]
+# Cationes cambiables a kg/ha usando pesos equivalentes (PE)
 k_kg_ha = k_meq * 39.1 * 10 * (pca / 2000)
-k2o_oferta = k_kg_ha * 1.2  # De K puro a K2O[cite: 1]
+k2o_oferta = k_kg_ha * 1.2  # De K puro a K2O
 
 ca_kg_ha = ca_meq * 20.0 * 10 * (pca / 2000)
 mg_kg_ha = mg_meq * 12.1 * 10 * (pca / 2000)
 
-# Nitrógeno total estimado a partir de la MO según práctica de la UMSA[cite: 2]
-nt_porcentaje = mo * 0.05  # MO * 0.05 = %N[cite: 2]
+# Nitrógeno total estimado a partir de la MO según práctica de la UMSA
+nt_porcentaje = mo * 0.05  # MO * 0.05 = %N
 nt_kg_ha = (nt_porcentaje / 100) * pca * 1000
 
-# Coeficiente de mineralización dinámico según pH (Ácido = 1%, Neutro/Alcalino = 2%)[cite: 1]
+# Coeficiente de mineralización dinámico según pH (Ácido = 1%, Neutro/Alcalino = 2%)
 coef_min = 1.0 if ph < 5.5 else 2.0
-n_disponible = nt_kg_ha * (coef_min / 100)  #[cite: 1]
+n_disponible = nt_kg_ha * (coef_min / 100)  
 
-# Cálculo de la CIC[cite: 1, 2]
+# Cálculo de la CIC
 cic_mineral = ca_meq + mg_meq + k_meq + na_meq
-cic_mo = 40.0 if ph < 5.5 else 200.0  # Retención según condición de acidez[cite: 1]
-cic_total_calculada = cic_mineral + (mo * (cic_mo / 100))  # meq/100g aproximado[cite: 1]
+cic_mo = 40.0 if ph < 5.5 else 200.0  # Retención según condición de acidez
+cic_total_calculada = cic_mineral + (mo * (cic_mo / 100))  # meq/100g aproximado
 
-# Relaciones Catiónicas[cite: 1]
+# Relaciones Catiónicas
 rel_ca_mg = ca_meq / mg_meq if mg_meq > 0 else 0
 rel_ca_k = ca_meq / k_meq if k_meq > 0 else 0
 rel_mg_k = mg_meq / k_meq if k_meq > 0 else 0
 
-# Saturación de Aluminio y Sodio[cite: 1, 2]
-sat_al = (al_meq / cic_total_calculada) * 100 if cic_total_calculada > 0 else 0[cite: 1]
-psi_na = (na_meq / cic_total_calculada) * 100 if cic_total_calculada > 0 else 0[cite: 1]
+# Saturación de Aluminio y Sodio
+sat_al = (al_meq / cic_total_calculada) * 100 if cic_total_calculada > 0 else 0
+psi_na = (na_meq / cic_total_calculada) * 100 if cic_total_calculada > 0 else 0
 
 # ==========================================
 # INTERFAZ DEL CUERPO PRINCIPAL
 # ==========================================
-st.title("🌱 Dashboard Académico de Fertilidad de Suelos - Bolivia")
+st.title("Dashboard Académico de Fertilidad de Suelos - Bolivia")
 st.markdown("---")
 
 # PESTAÑAS DEL DASHBOARD
-tab1, tab2, tab3 = st.tabs(["📋 Ficha de Cultivo y Diagnóstico", "📐 Índice de Storie & Aptitud", "🧪 Planificación de Fertilización"])
+tab1, tab2, tab3 = st.tabs(["Ficha de Cultivo y Diagnóstico", "Índice de Storie & Aptitud", "Planificación de Fertilización"])
 
 with tab1:
     st.subheader(f"Ficha Agronómica Fidedigna: {cultivo_sel}")
@@ -142,60 +142,60 @@ with tab1:
         st.info(cultivos_db[cultivo_sel]["Fases"])
         
     st.markdown("---")
-    st.subheader("🚨 Diagnóstico Automatizado de Limitantes Nutricionales")
+    st.subheader("Diagnóstico Automatizado de Limitantes Nutricionales")
     
-    # Sistema Experto de Alertas Basadas en Chilón y CETABOL[cite: 1, 2]
+    # Sistema Experto de Alertas Basadas en Chilón y CETABOL
     alertas = []
     if ph < 5.5:
-        alertas.append(f"❌ **Suelo Ácido (pH {ph}):** Riesgo severo de toxicidad por Aluminio ($Al^{{3+}}$). Baja disponibilidad de bases ($Ca, Mg, K$)[cite: 1, 2].")
+        alertas.append(f"**Suelo Ácido (pH {ph}):** Riesgo severo de toxicidad por Aluminio ($Al^{{3+}}$). Baja disponibilidad de bases ($Ca, Mg, K$).")
     elif ph > 7.8:
-        alertas.append(f"⚠️ **Suelo Alcalino (pH {ph}):** Puede ocurrir precipitación química de Fósforo debido al exceso de Calcio libre[cite: 1].")
+        alertas.append(f"**Suelo Alcalino (pH {ph}):** Puede ocurrir precipitación química de Fósforo debido al exceso de Calcio libre.")
         
     if ce > 2.0:
-        alertas.append(f"❌ **Problema de Salinidad (CE {ce} mS/cm):** El suelo califica como salino, afectando la absorción osmótica radicular[cite: 1, 2].")
+        alertas.append(f"**Problema de Salinidad (CE {ce} mS/cm):** El suelo califica como salino, afectando la absorción osmótica radicular.")
         
     if rel_ca_mg > 8.0:
-        alertas.append(f"⚠️ **Antagonismo Ca/Mg ({rel_ca_mg:.1f}):** El exceso relativo de Calcio bloquea e impide la absorción del Magnesio[cite: 1].")
+        alertas.append(f"**Antagonismo Ca/Mg ({rel_ca_mg:.1f}):** El exceso relativo de Calcio bloquea e impide la absorción del Magnesio.")
     if rel_mg_k < 1.8:
-        alertas.append(f"⚠️ **Desbalance Mg/K ({rel_mg_k:.1f}):** Proporción fuera del rango ideal (1.8 - 2.5), induciendo posibles deficiencias[cite: 1].")
+        alertas.append(f"**Desbalance Mg/K ({rel_mg_k:.1f}):** Proporción fuera del rango ideal (1.8 - 2.5), induciendo posibles deficiencias.")
         
     if sat_al > 65.0:
-        alertas.append(f"🚨 **Nivel Crítico de Aluminio ({sat_al:.1f}%):** Saturación extremadamente perjudicial para el crecimiento radicular. Encalado obligatorio[cite: 1, 2].")
+        alertas.append(f"**Nivel Crítico de Aluminio ({sat_al:.1f}%):** Saturación extremadamente perjudicial para el crecimiento radicular. Encalado obligatorio.")
 
     if alertas:
         for al in alertas:
             st.markdown(al)
     else:
-        st.success("✅ El complejo de cambio del suelo no muestra desbalances ni toxicidades críticas latentes.")
+        st.success("El complejo de cambio del suelo no muestra desbalances ni toxicidades críticas latentes.")
 
 with tab2:
-    st.subheader("📐 Evaluación de Aptitud por el Índice de Storie")
-    st.write("Cálculo paramétrico de la Práctica de Clase 1 de la UMSA[cite: 2].")
+    st.subheader("Evaluación de Aptitud por el Índice de Storie")
+    st.write("Cálculo paramétrico de la Práctica de Clase 1 de la UMSA.")
     
-    # Asignación de puntajes automatizados basados en las tablas del PDF[cite: 2]
-    # Factor A: Perfil/Profundidad[cite: 2]
+    # Asignación de puntajes automatizados basados en las tablas del PDF
+    # Factor A: Perfil/Profundidad
     fact_A = 100 if profundidad >= 90 else (80 if profundidad >= 60 else (50 if profundidad >= 30 else 20))
-    # Factor B: Textura (simplificado para el script base)[cite: 2]
-    fact_B = 100 # Asumiendo Franco equilibrado por defecto[cite: 2]
-    # Factor C: Pendiente (Asumiendo condición llana para ejemplo)[cite: 2]
-    fact_C = 100[cite: 2]
+    # Factor B: Textura (simplificado para el script base)
+    fact_B = 100 # Asumiendo Franco equilibrado por defecto
+    # Factor C: Pendiente (Asumiendo condición llana para ejemplo)
+    fact_C = 100
     
-    # Modificadores (Factor X)[cite: 2]
+    # Modificadores (Factor X)
     mod_ph = 100 if (6.5 <= ph <= 7.5) else 80
     mod_ce = 100 if ce < 2.0 else 50
-    mod_carb = 100 # Simplificado[cite: 2]
+    mod_carb = 100 # Simplificado
     
     fact_X = (mod_ph / 100) * (mod_ce / 100) * (mod_carb / 100) * 100
     
-    # Ecuación Multiplicativa de Storie[cite: 1, 2]
-    is_storie = (fact_A / 100) * (fact_B / 100) * (fact_C / 100) * (fact_X / 100) * 100[cite: 1, 2]
+    # Ecuación Multiplicativa de Storie
+    is_storie = (fact_A / 100) * (fact_B / 100) * (fact_C / 100) * (fact_X / 100) * 100
     
-    # Calificación final[cite: 1]
-    calif_storie = "Excelente" if is_storie >= 65 else ("Buena" if is_storie >= 35 else "Moderada/Pobre")[cite: 1]
+    # Calificación final
+    calif_storie = "Excelente" if is_storie >= 65 else ("Buena" if is_storie >= 35 else "Moderada/Pobre")
     
     st.metric(label="Índice de Storie Calculado", value=f"{is_storie:.2f} %", delta=f"Clasificación: {calif_storie}")
     
-    # Tabla estructurada réplica de la práctica académica[cite: 2]
+    # Tabla estructurada réplica de la práctica académica
     st.dataframe(pd.DataFrame({
         "Factor de Evaluación": ["Perfil (A)", "Textura (B)", "Pendiente (C)", "Modificador pH", "Modificador Salinidad"],
         "Puntuación Asignada (%)": [fact_A, fact_B, fact_C, mod_ph, mod_ce]
@@ -211,21 +211,21 @@ with tab3:
     
     st.write(f"**Peso calculado de tu capa arable:** `{pca:.0f} t/ha`[cite: 2]")
     
-    # Cuadro comparativo Oferta vs Demanda[cite: 1]
+    # Cuadro comparativo Oferta vs Demanda
     balance_df = pd.DataFrame({
         "Nutriente": ["Nitrógeno (N)", "Fósforo (P₂O₅)", "Potasio (K₂O)"],
         "Demanda Cultivo (kg/ha)": [dem_n, dem_p, dem_k],
         "Oferta Real Suelo (kg/ha)": [round(n_disponible, 1), round(p2o5_oferta, 1), round(k2o_oferta, 1)]
     })
     
-    # Calcular Dosis Teórica[cite: 1]
+    # Calcular Dosis Teórica
     balance_df["Dosis Teórica (Diferencia)"] = balance_df["Demanda Cultivo (kg/ha)"] - balance_df["Oferta Real Suelo (kg/ha)"]
     balance_df["Dosis Teórica (Diferencia)"] = balance_df["Dosis Teórica (Diferencia)"].apply(lambda x: max(0, x))
     
     st.table(balance_df)
     
     st.markdown("---")
-    st.subheader("🛒 Ajuste por Efectividad de Aplicación y Selección de Fuentes")
+    st.subheader("Ajuste por Efectividad de Aplicación y Selección de Fuentes")
     
     # Controles interactivos solicitados
     efectividad = st.slider("Ajustar Factor de Efectividad/Eficiencia de Aplicación (0.1 - 1.0):", 0.1, 1.0, 0.50, step=0.05)
@@ -237,6 +237,6 @@ with tab3:
     dosis_teor_n = balance_df.loc[0, "Dosis Teórica (Diferencia)"]
     if dosis_teor_n > 0:
         fertilizante_requerido = dosis_teor_n / (porcent_f * efectividad)
-        st.warning(f"💡 **Recomendación:** Se requiere aplicar **{fertilizante_requerido:.1f} kg/ha** de {opcion_f} para satisfacer el requerimiento neto.")
+        st.warning(f"**Recomendación:** Se requiere aplicar **{fertilizante_requerido:.1f} kg/ha** de {opcion_f} para satisfacer el requerimiento neto.")
     else:
-        st.success("🎉 El suelo cuenta con suficiente suministro de nitrógeno para el ciclo de este cultivo.")
+        st.success("El suelo cuenta con suficiente suministro de nitrógeno para el ciclo de este cultivo.")
